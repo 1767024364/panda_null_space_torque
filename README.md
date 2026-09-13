@@ -35,7 +35,7 @@ $$
 控制器激活时记录末端位姿 $T_d$ 作为期望位姿。当前位姿为 $T$，局部坐标系下的六维位姿误差为：
 
 $$
-e_T=\operatorname{Log}_6\left(T^{-1}T_d\right)^\vee
+e_T=\mathrm{Log}_6\left(T^{-1}T_d\right)^\vee
 $$
 
 Pinocchio 的 `LOCAL` 雅可比将当前末端旋量表达在当前末端坐标系 $C$ 中：
@@ -47,14 +47,14 @@ $$
 如果期望旋量 ${}^{D}V_d$ 表达在期望末端坐标系 $D$ 中，应先将它变换到当前末端坐标系：
 
 $$
-{}^{C}V_d=\operatorname{Ad}_{T^{-1}T_d}{}^{D}V_d
+{}^{C}V_d=\mathrm{Ad}_{T^{-1}T_d}{}^{D}V_d
 $$
 
 因此，末端旋量误差为：
 
 $$
 e_V={}^{C}V_d-{}^{C}V
-=\operatorname{Ad}_{T^{-1}T_d}{}^{D}V_d-J_{\mathrm{LOCAL}}(q)\dot q
+=\mathrm{Ad}_{T^{-1}T_d}{}^{D}V_d-J_{\mathrm{LOCAL}}(q)\dot q
 $$
 
 当前代码中的期望位姿固定，所以 ${}^{D}V_d=0$，上式化为：
@@ -153,7 +153,7 @@ $$
 
 $$
 \hat\tau_{\mathrm{ext},k}^{\mathrm{lim}}
-=\operatorname{clip}\left(\hat\tau_{\mathrm{ext},k},-\tau_{\max},\tau_{\max}\right)
+=\mathrm{clip}\left(\hat\tau_{\mathrm{ext},k},-\tau_{\max},\tau_{\max}\right)
 $$
 
 ### 7. 总控制律
