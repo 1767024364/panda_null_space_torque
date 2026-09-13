@@ -41,23 +41,23 @@ $$
 Pinocchio 的 `LOCAL` 雅可比将当前末端旋量表达在当前末端坐标系 $C$ 中：
 
 $$
-{}^CV=J_{\mathrm{LOCAL}}(q)\dot q
+{}^{C}V=J_{\mathrm{LOCAL}}(q)\dot q
 $$
 
-如果期望旋量 ${}^DV_d$ 表达在期望末端坐标系 $D$ 中，应先将它变换到当前末端坐标系：
+如果期望旋量 ${}^{D}V_d$ 表达在期望末端坐标系 $D$ 中，应先将它变换到当前末端坐标系：
 
 $$
-{}^CV_d=\operatorname{Ad}_{T^{-1}T_d}\,{}^DV_d
+{}^{C}V_d=\operatorname{Ad}_{T^{-1}T_d}{}^{D}V_d
 $$
 
 因此，末端旋量误差为：
 
 $$
-e_V={}^CV_d-{}^CV
-=\operatorname{Ad}_{T^{-1}T_d}\,{}^DV_d-J_{\mathrm{LOCAL}}(q)\dot q
+e_V={}^{C}V_d-{}^{C}V
+=\operatorname{Ad}_{T^{-1}T_d}{}^{D}V_d-J_{\mathrm{LOCAL}}(q)\dot q
 $$
 
-当前代码中的期望位姿固定，所以 ${}^DV_d=0$，上式化为：
+当前代码中的期望位姿固定，所以 ${}^{D}V_d=0$，上式化为：
 
 $$
 e_V=-J_{\mathrm{LOCAL}}(q)\dot q
