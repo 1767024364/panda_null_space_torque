@@ -1,0 +1,33 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 500
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    null_space_controller:
+      type: panda_controllers/NullSpaceController
+
+
+
+null_space_controller:
+  ros__parameters:
+    joints: 
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6
+      - joint7
+    max_velocity: 3.0
+    mjcf_path: $(find-pkg-share panda_description)/mujoco/panda_tau.xml
+    Kp: 200.0
+    Kd: 20.0
+    Kp_0: 0.0
+    Kd_0: 20.0
+    A: 0.0
+    omega: 2.0
+    Ko: 30.0
+    add_observer: true
+    max_tau_ext_hat: 300.0

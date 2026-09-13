@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<library path="panda_controllers">
+    <class name="panda_controllers/NullSpaceController"
+           type="panda_controllers::NullSpaceController"
+           base_class_type="controller_interface::ControllerInterface">
+    </class>
+</library>
