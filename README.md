@@ -28,7 +28,7 @@ $$
 M(q)\ddot q+C(q,\dot q)\dot q+g(q)=\tau_c+\tau_{\mathrm{ext}}
 $$
 
-其中，$M$ 为关节空间惯性矩阵，$C\dot q$ 为科氏力和离心力项，$g$ 为重力项，$\tau_c$ 为控制力矩，$\tau_{\mathrm{ext}}$ 为外力对应的广义关节力矩。
+其中， $M$ 为关节空间惯性矩阵， $C\dot q$ 为科氏力和离心力项， $g$ 为重力项， $\tau_c$ 为控制力矩， $\tau_{\mathrm{ext}}$ 为外力对应的广义关节力矩。
 
 ### 2. 末端位姿误差与旋量误差
 
@@ -103,7 +103,7 @@ $$
 F_{\mathrm{task}}=\Lambda\left(K_p e_T+K_d e_V\right)+\mu+p
 $$
 
-其中，$K_p$ 作用于位姿误差 $e_T$，$K_d$ 作用于旋量误差 $e_V$。
+其中， $K_p$ 作用于位姿误差 $e_T$， $K_d$ 作用于旋量误差 $e_V$。
 
 ### 5. 关节零空间次任务
 
