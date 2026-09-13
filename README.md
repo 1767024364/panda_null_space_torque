@@ -8,12 +8,6 @@
 
 ![Panda 末端位姿力矩级零空间控制演示](docs/images/pose_null_space_torque.gif)
 
-GIF 请保存为：
-
-```text
-docs/images/pose_null_space_torque.gif
-```
-
 ## 主要功能
 
 - Panda 七轴机械臂 MuJoCo 仿真与可视化；
@@ -36,27 +30,40 @@ $$
 
 其中，$M$ 为关节空间惯性矩阵，$C\dot q$ 为科氏力和离心力项，$g$ 为重力项，$\tau_c$ 为控制力矩，$\tau_{\mathrm{ext}}$ 为外力对应的广义关节力矩。
 
-### 2. 末端位姿误差
+### 2. 末端位姿误差与旋量误差
 
-控制器激活时记录末端位姿 $T_d$ 作为期望位姿。当前位姿为 $T$，局部坐标系下的六维误差为：
-
-$$
-e=\operatorname{Log}_6\!\left(T^{-1}T_d\right)^\vee
-$$
-
-雅可比使用 Pinocchio 的 `LOCAL` 表达：
+控制器激活时记录末端位姿 $T_d$ 作为期望位姿。当前位姿为 $T$，局部坐标系下的六维位姿误差为：
 
 $$
-V=J(q)\dot q
+e_T=\operatorname{Log}_6\left(T^{-1}T_d\right)^\vee
 $$
 
-由于期望位姿固定，当前代码采用以下误差速度：
+Pinocchio 的 `LOCAL` 雅可比将当前末端旋量表达在当前末端坐标系 $C$ 中：
 
 $$
-\dot e\approx-J(q)\dot q
+{}^CV=J_{\mathrm{LOCAL}}(q)\dot q
 $$
 
-这与代码中的 `dpose_error = -J_local * dq` 一致。远离零误差时，严格的 SE(3) 误差导数还需要考虑 $J_{\log 6}$。
+如果期望旋量 ${}^DV_d$ 表达在期望末端坐标系 $D$ 中，应先将它变换到当前末端坐标系：
+
+$$
+{}^CV_d=\operatorname{Ad}_{T^{-1}T_d}\,{}^DV_d
+$$
+
+因此，末端旋量误差为：
+
+$$
+e_V={}^CV_d-{}^CV
+=\operatorname{Ad}_{T^{-1}T_d}\,{}^DV_d-J_{\mathrm{LOCAL}}(q)\dot q
+$$
+
+当前代码中的期望位姿固定，所以 ${}^DV_d=0$，上式化为：
+
+$$
+e_V=-J_{\mathrm{LOCAL}}(q)\dot q
+$$
+
+代码中的 `dpose_error = -J_local * dq_.topRows(7)` 实际表示旋量误差 $e_V$，而不是位姿对数误差 $e_T$ 的时间导数。若要计算 $\dot e_T$，则需要另外考虑 $J_{\log 6}$。
 
 ### 3. 操作空间动力学
 
@@ -93,10 +100,10 @@ $$
 对固定期望位姿，代码中的末端六维控制力为：
 
 $$
-F_{\mathrm{task}}=\Lambda\left(K_p e+K_d\dot e\right)+\mu+p
+F_{\mathrm{task}}=\Lambda\left(K_p e_T+K_d e_V\right)+\mu+p
 $$
 
-其中，$K_p$ 和 $K_d$ 分别为末端位姿的比例与微分增益。
+其中，$K_p$ 作用于位姿误差 $e_T$，$K_d$ 作用于旋量误差 $e_V$。
 
 ### 5. 关节零空间次任务
 
@@ -146,7 +153,7 @@ $$
 
 $$
 \hat\tau_{\mathrm{ext},k}^{\mathrm{lim}}
-=\operatorname{clip}\!\left(\hat\tau_{\mathrm{ext},k},-\tau_{\max},\tau_{\max}\right)
+=\operatorname{clip}\left(\hat\tau_{\mathrm{ext},k},-\tau_{\max},\tau_{\max}\right)
 $$
 
 ### 7. 总控制律
@@ -178,9 +185,9 @@ $$
 | `Kd_0` | `20.0` | 零空间关节速度增益 |
 | `A` | `0.0` | 零空间正弦关节轨迹幅值 |
 | `omega` | `2.0` | 正弦轨迹角频率，单位 rad/s |
-| `Ko` | `50.0` | 动量观测器增益 |
+| `Ko` | `30.0` | 动量观测器增益 |
 | `add_observer` | `true` | 是否将外力矩估计加入补偿回路 |
-| `max_tau_ext_hat` | `3000.0` | 单关节外力矩估计限幅 |
+| `max_tau_ext_hat` | `300.0` | 单关节外力矩估计限幅 |
 
 当前 `A = 0` 且 `Kp_0 = 0`，因此零空间不执行主动正弦位置轨迹，但 `Kd_0` 仍提供零空间速度阻尼。
 
